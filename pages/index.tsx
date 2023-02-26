@@ -153,26 +153,26 @@ export default function Component() {
             </div>
           </div>
         </nav>
-    <div className="container mx-auto mt-7">
-      <input
-        className="border border-gray-400 p-2 rounded-md w-full"
-        type="text"
-        placeholder="Search repositories"
-        value={searchTerm}
-        onChange={(event) => setSearchTerm(event.target.value)}
-      />
-      <div className="mt-5">
-        {filteredRepositories.map((repo) => (
-          <RepositoryCard
-            key={repo.name}
-            owner={repo.owner}
-            name={repo.name}
-            description={repo.description}
-            createdAt={repo.createdAt}
+        <div className="container mx-3 mt-7 w-5/6">
+          <input
+            className="border border-gray-400 p-2 rounded-md mx-3 w-full"
+            type="text"
+            placeholder="Search repositories"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
           />
-        ))}
-      </div>
-    </div>
+          <div className="mt-5">
+            {filteredRepositories.map((repo) => (
+              <RepositoryCard
+                key={repo.name}
+                owner={repo.owner}
+                name={repo.name}
+                description={repo.description}
+                createdAt={repo.createdAt}
+              />
+            ))}
+          </div>
+        </div>
       </>
     );
   }

@@ -46,6 +46,11 @@ const REPOSITORY_QUERY = gql`
         avatarUrl
         login
       }
+      object(expression: "master:README.md") {
+        ... on Blob {
+          text
+        }
+      }
     }
   }
 `;
@@ -57,7 +62,7 @@ interface RepositoryDetailsProps {
 
 export default function RepositoryDetails({ owner, name }: RepositoryDetailsProps) {
 
-    const [chartData, setChartData] = useState([]);
+    // const [chartData, setChartData] = useState([]);
 
   const { loading, error, data } = useQuery(REPOSITORY_QUERY, {
     variables: { owner, name },
@@ -74,13 +79,12 @@ export default function RepositoryDetails({ owner, name }: RepositoryDetailsProp
 
   const { repository } = data;
   
-  useEffect(() => {
-    if (data) {
-      const { languages } = data.repository;
-      setChartData(languages.nodes);
-    }
-  }, [data]);
+//   useEffect(() => {
+//       const { languages } = repository;
+//       setChartData(languages.nodes);
+//   }, [repository]);
   const repoURL = `https://github.com/${repository.owner.login}/${repository.name}`
+  const readmeURL = `https://github.com/${repository.owner.login}/${repository.name}#readme`
 
   return (
     <>
@@ -104,22 +108,17 @@ export default function RepositoryDetails({ owner, name }: RepositoryDetailsProp
                 <p className="text-gray-700 text-lg mt-4">{repository.description}</p>
                 <div className="mt-4 flex-shrink-0 flex">
                     <a href={repoURL} target="_blank" rel="noopener noreferrer">
-                    <button type="button" className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
-                        View on GitHub
-                    </button>
+                        <button type="button" className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
+                            View on GitHub
+                        </button>
                     </a>
                 </div>
                 <div className="mt-4">
-                    <p className="text-lg font-bold mb-2">Languages Used :</p>
-                    <div className="grid grid-cols-3 gap-4 mb-4">
-                        {chartData.map((language: any) => (
-                            <div className=""
-                            key={language.name}>
-                                <p className="mb-1 bg-gray-200 p-3 border-2 border-black rounded text-black text-sm">{language.name}</p>
-                            </div>
-                        ))}
+                    <p className="text-lg font-bold mb-2">Primary Language Used :</p>
+                    <div className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mb-3">
+                        {repository.primaryLanguage.name}
                     </div>
-                    <div className="flex items-center text-gray-600 text-sm mb-2">
+                    <div className="flex items-center text-gray-600 text-md mb-2">
                         <p className='pr-2'>StarCount: </p>
                         <svg
                         className="h-4 w-4 fill-current mr-1"
@@ -134,7 +133,7 @@ export default function RepositoryDetails({ owner, name }: RepositoryDetailsProp
                         </svg>
                         <span>{repository.stargazerCount}</span>
                     </div>
-                    <div className="flex items-center text-gray-600 text-sm mb-2">
+                    <div className="flex items-center text-gray-600 text-md mb-2">
                         <p className='pr-2'>ForkCount: </p>
                         <svg
                         className="h-4 w-4 fill-current mr-1"
@@ -149,17 +148,24 @@ export default function RepositoryDetails({ owner, name }: RepositoryDetailsProp
                         </svg>
                         <span>{repository.forkCount}</span>
                     </div>
-                    <div className="flex items-center text-gray-600 text-sm mb-2">
+                    <div className="flex items-center text-gray-600 text-md mb-2">
                         <p className='pr-2'>License: </p>
                         <span>{repository.licenseInfo.name}</span>
                     </div>
-                    <div className="flex items-center text-gray-600 text-sm mb-2">
+                    <div className="flex items-center text-gray-600 text-md mb-2">
                         <p className='pr-2'>Last Updated On: </p>
                         <span>{repository.updatedAt}</span>
                     </div>
-                    <div className="flex items-center text-gray-600 text-sm mb-2">
+                    <div className="flex items-center text-gray-600 text-md mb-2">
                         <p className='pr-2'>Total Watchers: </p>
                         <span>{repository.stargazers.totalCount}</span>
+                    </div>
+                    <div className="mt-4 flex-shrink-0 flex">
+                        <a href={readmeURL} target="_blank" rel="noopener noreferrer">
+                            <button type="button" className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
+                                Read the README.md of the repo
+                            </button>
+                        </a>
                     </div>
                 </div>
             </div>
